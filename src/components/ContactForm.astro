@@ -1,72 +1,40 @@
 ---
-// No imports ni lógica extra - solo en español
-
-// Datos de comparación de imágenes
-const imageComparisonsData = [
-  {
-    before: "https://res.cloudinary.com/drwacbtjf/image/upload/v1742854747/Imagen_de_WhatsApp_2025-02-06_a_las_18.38.14_023dbe16_ylkdxr.jpg",
-    after: "https://res.cloudinary.com/drwacbtjf/image/upload/v1742854663/Imagen_de_WhatsApp_2025-02-06_a_las_18.38.13_e9174645_lgkbqk.jpg",
-    alt: "Comparación de proyecto 1"
-  },
-  {
-    before: "https://res.cloudinary.com/drwacbtjf/image/upload/v1742854747/Imagen_de_WhatsApp_2025-02-06_a_las_18.38.14_023dbe16_ylkdxr.jpg", 
-    after: "https://res.cloudinary.com/drwacbtjf/image/upload/v1742854663/Imagen_de_WhatsApp_2025-02-06_a_las_18.38.13_e9174645_lgkbqk.jpg",
-    alt: "Comparación de proyecto 2"
-  }
-];
+import ImageComparison from './imageComparison/ImageComparison.astro';
+import { imageComparisonsData } from './imageComparison/ImageComparisonsData';
+import './ContactForm.css';
 ---
-
 <section id="contact-container" class="contact-container" data-aos="fade-up">
   <div class="contact-info" data-aos="fade-right" data-aos-delay="200">
-    <div class="image-comparison-section">
-      <h2>Antes y Después</h2>
-      <p>Mira la transformación de nuestros proyectos</p>
-      <div class="comparison-container">
-        <div class="image-comparison-demo">
-          <div class="comparison-slider-demo">
-            <div class="before-image">
-              <img src="https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg" alt="Antes" />
-              <span class="label">Antes</span>
-            </div>
-            <div class="after-image">
-              <img src="https://res.cloudinary.com/demo/image/upload/v1312461204/sample.jpg" alt="Después" />
-              <span class="label">Después</span>
-            </div>
-            <div class="slider-handle"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ImageComparison comparisons={imageComparisonsData} />
   </div>
-
   <div class="contact-form" data-aos="fade-left" data-aos-delay="300">
-    <h2 data-aos="fade-up" data-aos-delay="100">Contáctanos</h2>
-    <p data-aos="fade-up" data-aos-delay="150">Estamos aquí para ayudarte</p>
+    <h2 data-aos="fade-up" data-aos-delay="100">Contact Us</h2>
+    <p data-aos="fade-up" data-aos-delay="150">We're here to help</p>
     <form id="contactForm" data-aos="fade-up" data-aos-delay="200">
       <div data-aos="fade-up" data-aos-delay="250">
-        <label for="name">Nombre</label>
+        <label for="name">Name</label>
         <input type="text" id="name" name="name" required />
       </div>
       <div data-aos="fade-up" data-aos-delay="300">
-        <label for="surname">Apellido</label>
+        <label for="surname">Surname</label>
         <input type="text" id="surname" name="surname" required />
       </div>
       <div data-aos="fade-up" data-aos-delay="350">
-        <label for="email">Correo electrónico</label>
+        <label for="email">Email</label>
         <input type="email" id="email" name="email" required />
       </div>
       <div data-aos="fade-up" data-aos-delay="400">
-        <label for="phone">Teléfono</label>
+        <label for="phone">Phone</label>
         <input type="tel" id="phone" name="phone" required />
       </div>
       <div data-aos="fade-up" data-aos-delay="450">
-        <label for="message">Mensaje</label>
+        <label for="message">Message</label>
         <textarea id="message" name="message" required></textarea>
       </div>
-      <button type="submit" data-aos="fade-up" data-aos-delay="500">Enviar</button>
+      <button type="submit" data-aos="fade-up" data-aos-delay="500">Submit</button>
     </form>
-    <div id="successMessage" class="success-message hidden">¡Mensaje enviado con éxito!</div>
-    <div id="errorMessage" class="error-message hidden">Error al enviar el mensaje. Por favor, inténtalo de nuevo.</div>
+    <div id="successMessage" class="success-message hidden">Message sent successfully!</div>
+    <div id="errorMessage" class="error-message hidden">Error sending message. Please try again.</div>
     <div class="social-icons" data-aos="fade-up" data-aos-delay="550">
       <a href="https://instagram.com/rgbcorp" target="_blank" rel="noopener noreferrer">
         <i class="fab fa-instagram icon instagram"></i>
@@ -80,7 +48,6 @@ const imageComparisonsData = [
     </div>
   </div>
 </section>
-
 <script>
   const form = document.getElementById('contactForm');
   const successMessage = document.getElementById('successMessage');
@@ -100,356 +67,4 @@ const imageComparisonsData = [
       form.reset();
     });
   }
-
-  // Demo slider para comparación de imágenes
-  const sliderDemo = document.querySelector('.comparison-slider-demo');
-  if (sliderDemo) {
-    let isDragging = false;
-    const handle = sliderDemo.querySelector('.slider-handle');
-    const afterImage = sliderDemo.querySelector('.after-image');
-
-    const updateSlider = (x) => {
-      const rect = sliderDemo.getBoundingClientRect();
-      const percentage = Math.max(0, Math.min(100, ((x - rect.left) / rect.width) * 100));
-      handle.style.left = `${percentage}%`;
-      afterImage.style.clipPath = `inset(0 ${100 - percentage}% 0 0)`;
-    };
-
-    sliderDemo.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      updateSlider(e.clientX);
-    });
-
-    document.addEventListener('mousemove', (e) => {
-      if (isDragging) {
-        updateSlider(e.clientX);
-      }
-    });
-
-    document.addEventListener('mouseup', () => {
-      isDragging = false;
-    });
-  }
-</script>
-
-<style>
-.contact-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2.5rem;
-  justify-content: center;
-  align-items: flex-start;
-  background: linear-gradient(135deg, #f8f8f8, #f8f8f8);
-  padding: 3rem 1rem;
-  border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-  margin: 2rem auto;
-  max-width: 1200px;
-}
-
-.contact-info {
-  flex: 1 1 350px;
-  min-width: 320px;
-  max-width: 480px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 1rem 0;
-}
-
-.contact-form {
-  flex: 1 1 350px;
-  min-width: 320px;
-  max-width: 480px;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-  padding: 2.5rem 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin: 0 auto;
-}
-
-.contact-form h2 {
-  color: #2a7892;
-  margin-bottom: 0.5rem;
-  font-size: 1.7rem;
-  text-align: center;
-}
-
-.contact-form p {
-  color: #555;
-  margin-bottom: 1.2rem;
-  text-align: center;
-}
-
-.contact-form label {
-  font-weight: 500;
-  color: #2a7892;
-  margin-bottom: 0.3rem;
-  display: block;
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  font-size: 1rem;
-  background: #fafbfc;
-  margin-bottom: 1rem;
-  transition: border 0.2s;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  border: 1.5px solid #2a7892;
-  outline: none;
-}
-
-.contact-form textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-.contact-form button {
-  background: #2a7892;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 0.75rem 2rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s;
-  margin-top: 0.5rem;
-}
-
-.contact-form button:hover {
-  background: #17596b;
-}
-
-.success-message,
-.error-message {
-  display: block;
-  padding: 0.7rem 1rem;
-  border-radius: 6px;
-  font-size: 1rem;
-  margin: 0.5rem 0 0.5rem 0;
-  text-align: center;
-}
-
-.success-message {
-  background: #e6f9ed;
-  color: #388e3c;
-  border: 1px solid #b2e2c7;
-}
-
-.error-message {
-  background: #fdeaea;
-  color: #d32f2f;
-  border: 1px solid #f5bdbd;
-}
-
-.hidden {
-  display: none;
-}
-
-.social-icons {
-  display: flex;
-  justify-content: center;
-  gap: 1.2rem;
-  margin-top: 1.2rem;
-}
-
-.social-icons .icon {
-  font-size: 2rem;
-  color: #2a7892;
-  transition: color 0.2s;
-}
-
-.social-icons .icon.instagram:hover {
-  color: #e1306c;
-}
-
-.social-icons .icon.facebook:hover {
-  color: #1877f3;
-}
-
-.social-icons .icon.whatsapp:hover {
-  color: #25d366;
-}
-
-/* Estilos para la comparación de imágenes */
-.image-comparison-section {
-  width: 100%;
-  text-align: center;
-}
-
-.image-comparison-section h2 {
-  color: #8bbaca;
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.image-comparison-section p {
-  color: #666;
-  margin-bottom: 2rem;
-}
-
-.comparison-container {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.image-comparison-demo {
-  position: relative;
-  width: 100%;
-  height: 250px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-}
-
-.comparison-slider-demo {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  cursor: col-resize;
-}
-
-.before-image,
-.after-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.before-image img,
-.after-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.after-image {
-  clip-path: inset(0 50% 0 0);
-}
-
-.slider-handle {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 4px;
-  height: 100%;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-  transform: translateX(-50%);
-  cursor: col-resize;
-}
-
-.slider-handle::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 20px;
-  height: 20px;
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0,0,0,0.3);
-}
-
-.label {
-  position: absolute;
-  bottom: 10px;
-  padding: 4px 8px;
-  background: rgba(0,0,0,0.7);
-  color: #fff;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
-.before-image .label {
-  left: 10px;
-}
-
-.after-image .label {
-  right: 10px;
-}
-
-@media (max-width: 900px) {
-  .contact-container {
-    flex-direction: column;
-    gap: 2rem;
-    padding: 2rem 0.5rem;
-  }
-  
-  .contact-info, .contact-form {
-    max-width: 100%;
-    min-width: 0;
-    padding: 1.2rem 0.5rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .contact-form {
-    width: 100vw;
-    max-width: 98vw;
-    min-width: 0;
-    margin: 0 -2vw;
-    padding: 2rem 4vw 1.5rem 4vw;
-    border-radius: 18px;
-    box-shadow: 0 6px 32px rgba(42,120,146,0.10);
-    gap: 1.2rem;
-  }
-  
-  .contact-form input,
-  .contact-form textarea {
-    font-size: 1.08rem;
-    padding: 1rem 1.2rem;
-    border-radius: 10px;
-    margin-bottom: 1.2rem;
-  }
-  
-  .contact-form button {
-    font-size: 1.15rem;
-    padding: 1rem 0;
-    border-radius: 10px;
-    margin-top: 0.8rem;
-    box-shadow: 0 2px 12px rgba(42,120,146,0.10);
-    letter-spacing: 0.5px;
-  }
-  
-  .contact-form h2 {
-    font-size: 1.35rem;
-    margin-bottom: 0.2rem;
-  }
-  
-  .contact-form p {
-    font-size: 1.05rem;
-    margin-bottom: 0.7rem;
-  }
-  
-  .contact-form label {
-    font-size: 1.01rem;
-    margin-bottom: 0.2rem;
-  }
-  
-  .success-message, .error-message {
-    font-size: 0.98rem;
-    padding: 0.6rem 0.5rem;
-    border-radius: 8px;
-  }
-  
-  .image-comparison-demo {
-    height: 200px;
-  }
-}
-</style> 
+</script> 

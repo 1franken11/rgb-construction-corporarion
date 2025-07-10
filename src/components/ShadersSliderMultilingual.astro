@@ -1,34 +1,26 @@
 ---
-// No imports ni lógica extra - solo en español
+import './ShadersSlider.css';
 ---
-
-<div id="image-slider" class="image-slider" tabindex="0" aria-label="Slider de imágenes fullscreen">
+<div id="image-slider" class="image-slider" tabindex="0" aria-label="Fullscreen image slider">
   <div class="slider-images">
-    <img class="slider-img active" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1742920360/firstsection4_eb9qfy.jpg" alt="Obra 1" data-title="RGB Construction Corporation" data-subtitle="Especialistas en Pisos y Revestimientos" />
-    <img class="slider-img" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1742920359/firstsection2_vvtaae.jpg" alt="Obra 2" data-title="Calidad Garantizada" data-subtitle="Más de 10 años de experiencia en el mercado" />
-    <img class="slider-img" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1742920359/firstsection3_e4au5x.jpg" alt="Obra 3" data-title="Servicios Profesionales" data-subtitle="Instalación y mantenimiento de pisos" />
-    <img class="slider-img" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1744659060/escalera_cm3lbb.jpg" alt="Obra 4" data-title="Transformamos Espacios" data-subtitle="Diseño y construcción a medida" />
+    <img class="slider-img active" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1742920360/firstsection4_eb9qfy.jpg" alt="Project 1" data-title="Modern Living Room" data-subtitle="Vinyl Flooring" />
+    <img class="slider-img" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1742920359/firstsection2_vvtaae.jpg" alt="Project 2" data-title="Elegant Kitchen" data-subtitle="Tile Flooring" />
+    <img class="slider-img" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1742920359/firstsection3_e4au5x.jpg" alt="Project 3" data-title="Cozy Bedroom" data-subtitle="Laminate Flooring" />
+    <img class="slider-img" src="https://res.cloudinary.com/drwacbtjf/image/upload/v1744659060/escalera_cm3lbb.jpg" alt="Project 4" data-title="Stylish Stairs" data-subtitle="Wood Flooring" />
   </div>
-  
   <div class="slider-overlay-text" id="slider-overlay-text">
     <h1 class="slider-title"></h1>
     <p class="slider-subtitle"></p>
   </div>
-  
   <div class="slider-nav">
-    <button class="slider-btn prev" id="slider-prev" aria-label="Anterior">
-      <svg width="32" height="32" viewBox="0 0 24 24">
-        <path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="2" fill="none"/>
-      </svg>
+    <button class="slider-btn prev" id="slider-prev" aria-label="Previous">
+      <svg width="32" height="32" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" stroke="#fff" stroke-width="2" fill="none"/></svg>
     </button>
-    <button class="slider-btn next" id="slider-next" aria-label="Siguiente">
-      <svg width="32" height="32" viewBox="0 0 24 24">
-        <path d="M9 18l6-6-6-6" stroke="#fff" stroke-width="2" fill="none"/>
-      </svg>
+    <button class="slider-btn next" id="slider-next" aria-label="Next">
+      <svg width="32" height="32" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6" stroke="#fff" stroke-width="2" fill="none"/></svg>
     </button>
   </div>
 </div>
-
 <script is:inline>
 console.log('SLIDER SCRIPT INICIADO');
 window.addEventListener('DOMContentLoaded', () => {
@@ -47,6 +39,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const INTERVAL = 5000;
   const EFFECTS = ['fade-zoom', 'slide-skew', 'wave'];
 
+  // Mostrar el primer texto inmediatamente y nunca ocultarlo hasta la primera transición
   function showFirstSlide() {
     const img = images[0];
     if (titleEl) titleEl.textContent = img.getAttribute('data-title') || '';
@@ -56,30 +49,31 @@ window.addEventListener('DOMContentLoaded', () => {
       overlay.style.visibility = 'visible';
     }
     current = 0;
-    console.log('[SLIDER] showFirstSlide: overlay visible, current=0');
+    console.log('[SLIDER] showFirstSlide: overlay visible, current=0, title=', titleEl?.textContent, 'subtitle=', subtitleEl?.textContent);
   }
 
   function showSlide(idx, effect = 'fade-zoom', direction = 1) {
     if (isTransitioning || idx === current) return;
     isTransitioning = true;
-    
+    // Ocultar texto antes de la transición y limpiar contenido
     if (overlay) {
       overlay.classList.remove('show');
       overlay.style.visibility = 'hidden';
+      console.log('[SLIDER] showSlide: overlay oculto antes de transición, idx=', idx, 'current=', current);
     }
-    
     setTimeout(() => {
+      // Cambiar el texto y mostrarlo solo después de la transición
       const img = images[idx];
       if (titleEl) titleEl.textContent = img.getAttribute('data-title') || '';
       if (subtitleEl) subtitleEl.textContent = img.getAttribute('data-subtitle') || '';
       if (overlay) {
         overlay.classList.add('show');
         overlay.style.visibility = 'visible';
+        console.log('[SLIDER] showSlide: overlay visible después de transición, idx=', idx, 'current=', current, 'title=', titleEl?.textContent, 'subtitle=', subtitleEl?.textContent);
       }
       isTransitioning = false;
       current = idx;
     }, DURATION);
-    
     images.forEach((img, i) => {
       img.classList.remove('active', 'fade-zoom', 'slide-skew', 'wave', 'out-left', 'out-right');
       if (i === idx) {
@@ -96,41 +90,35 @@ window.addEventListener('DOMContentLoaded', () => {
     const next = (current + 1) % images.length;
     showSlide(next, effect || randomEffect(), 1);
   }
-  
   function prevSlide(effect) {
     if (isTransitioning) return;
     resetAuto();
     const prev = (current - 1 + images.length) % images.length;
     showSlide(prev, effect || randomEffect(), -1);
   }
-  
   function randomEffect() {
     return EFFECTS[Math.floor(Math.random() * EFFECTS.length)];
   }
-  
   function startAuto() {
     if (timer) clearInterval(timer);
     timer = setInterval(() => {
       if (!isTransitioning) nextSlide(undefined);
     }, INTERVAL);
   }
-  
   function stopAuto() {
     if (timer) clearInterval(timer);
     timer = null;
   }
-  
   function resetAuto() {
     stopAuto();
     startAuto();
   }
-  
   if (slider) {
     slider.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft') prevSlide(undefined);
       if (e.key === 'ArrowRight') nextSlide(undefined);
     });
-    
+    // Touch
     let touchStartX = 0;
     slider.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; });
     slider.addEventListener('touchend', e => {
@@ -139,19 +127,16 @@ window.addEventListener('DOMContentLoaded', () => {
       if (dx < -40) nextSlide(undefined);
     });
   }
-  
   if (prevBtn) prevBtn.addEventListener('click', () => { prevSlide(undefined); });
   if (nextBtn) nextBtn.addEventListener('click', () => { nextSlide(undefined); });
-  
+  // Init: mostrar primer slide correctamente y arrancar auto-advance
   showFirstSlide();
   startAuto();
-  
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.body.classList.add('reduced-motion');
   }
 });
 </script>
-
 <style>
 .image-slider {
   position: relative;
@@ -161,13 +146,11 @@ window.addEventListener('DOMContentLoaded', () => {
   background: #222;
   outline: none;
 }
-
 .slider-images {
   width: 100vw;
   height: 100vh;
   position: relative;
 }
-
 .slider-img {
   position: absolute;
   top: 0; left: 0;
@@ -179,65 +162,54 @@ window.addEventListener('DOMContentLoaded', () => {
   pointer-events: none;
   transition: none;
 }
-
 .slider-img.active {
   opacity: 1;
   z-index: 2;
   pointer-events: auto;
 }
-
 /* Fade + Zoom */
 .slider-img.fade-zoom {
   animation: fadeZoomIn 1.5s ease-in-out;
 }
-
 @keyframes fadeZoomIn {
   0% { opacity: 0; transform: scale(1.08); filter: blur(4px); }
   60% { opacity: 1; }
   100% { opacity: 1; transform: scale(1); filter: blur(0); }
 }
-
 /* Slide + Skew */
 .slider-img.slide-skew {
   animation: slideSkewIn 1.5s ease-in-out;
 }
-
 .slider-img.out-left.slide-skew {
   animation: slideSkewOutLeft 1.5s ease-in-out;
 }
-
 .slider-img.out-right.slide-skew {
   animation: slideSkewOutRight 1.5s ease-in-out;
 }
-
 @keyframes slideSkewIn {
   0% { opacity: 0; transform: translateX(60vw) skewX(-12deg) scale(1.05); }
   60% { opacity: 1; }
   100% { opacity: 1; transform: none; }
 }
-
 @keyframes slideSkewOutLeft {
   0% { opacity: 1; transform: none; }
   100% { opacity: 0; transform: translateX(-60vw) skewX(12deg) scale(1.05); }
 }
-
 @keyframes slideSkewOutRight {
   0% { opacity: 1; transform: none; }
   100% { opacity: 0; transform: translateX(60vw) skewX(-12deg) scale(1.05); }
 }
-
-/* Wave/Ripple */
+/* Wave/Ripple (simulado) */
 .slider-img.wave {
   animation: waveIn 1.5s cubic-bezier(.77,0,.18,1);
+  filter: url(#wave-filter);
 }
-
 @keyframes waveIn {
   0% { opacity: 0; filter: blur(8px) contrast(1.2); }
   60% { opacity: 1; filter: blur(2px) contrast(1.1); }
   100% { opacity: 1; filter: blur(0) contrast(1); }
 }
-
-/* Overlay de texto */
+/* Overlay de texto animado */
 .slider-overlay-text {
   position: absolute;
   top: 50%;
@@ -253,27 +225,23 @@ window.addEventListener('DOMContentLoaded', () => {
   transition: opacity 0.5s, filter 0.5s, transform 0.5s;
   filter: blur(8px) translateY(40px);
 }
-
 .slider-overlay-text.show {
   opacity: 1;
   filter: blur(0) translateY(0);
   transition-delay: 0.5s;
 }
-
 .slider-title {
   font-size: clamp(2.5rem, 8vw, 5rem);
   font-weight: 700;
   margin-bottom: 1rem;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
-
 .slider-subtitle {
   font-size: clamp(1.2rem, 4vw, 1.8rem);
   margin-bottom: 2rem;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
   opacity: 0.9;
 }
-
 .slider-nav {
   position: absolute;
   bottom: 40px;
@@ -283,7 +251,6 @@ window.addEventListener('DOMContentLoaded', () => {
   gap: 2rem;
   z-index: 20;
 }
-
 .slider-btn {
   background: rgba(0,0,0,0.7);
   border: none;
@@ -297,19 +264,16 @@ window.addEventListener('DOMContentLoaded', () => {
   transition: background 0.2s, transform 0.2s;
   outline: none;
 }
-
 .slider-btn:hover, .slider-btn:focus {
   background: #8bbaca;
   transform: scale(1.1);
 }
-
 @media (max-width: 768px) {
   .slider-title { font-size: 2rem; }
   .slider-subtitle { font-size: 1rem; }
   .slider-btn { width: 40px; height: 40px; }
   .slider-nav { bottom: 20px; gap: 1rem; }
 }
-
 .reduced-motion *, .reduced-motion .slider-img, .reduced-motion .slider-overlay-text {
   transition: none !important;
   animation: none !important;

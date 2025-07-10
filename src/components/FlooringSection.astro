@@ -1,202 +1,172 @@
 ---
-import FlooringModal from './FlooringModal.astro';
-const flooringData = [
-  {
-    key: "Vinyl",
-    label: "Vinilo",
-    image: "https://res.cloudinary.com/drwacbtjf/image/upload/v1743508300/WhatsApp_Image_2025-03-31_at_23.10.44_ff4b6490_phzxzy.jpg",
-    bgImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642268/vynil_sie1yd.jpg",
-    modalImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744662421/vinyll_samvcc.jpg",
-    gallery: [
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744662421/vinyll_samvcc.jpg",
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642268/vynil_sie1yd.jpg"
-    ],
-    description: "Pisos de vinilo de alta calidad, resistentes y fáciles de mantener."
-  },
-  {
-    key: "Laminate",
-    label: "Laminado",
-    image: "https://res.cloudinary.com/drwacbtjf/image/upload/v1743508301/WhatsApp_Image_2025-03-31_at_23.10.44_86077beb_mnfxib.jpg",
-    bgImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642091/laminate_1_ewkfrn.jpg",
-    modalImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744643166/Imagen_de_WhatsApp_2025-02-06_a_las_18.38.14_faf1dc6f_l12fpq.jpg",
-    gallery: [
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744643166/Imagen_de_WhatsApp_2025-02-06_a_las_18.38.14_faf1dc6f_l12fpq.jpg",
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642091/laminate_1_ewkfrn.jpg"
-    ],
-    description: "Pisos laminados con acabado de madera natural, durables y elegantes."
-  },
-  {
-    key: "Tile",
-    label: "Cerámica",
-    image: "https://res.cloudinary.com/drwacbtjf/image/upload/v1743508301/WhatsApp_Image_2025-03-31_at_23.10.45_7e4276ce_gettwe.jpg",
-    bgImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642267/Tile_tbbln5.jpg",
-    modalImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744643216/Imagen_de_WhatsApp_2025-02-06_a_las_18.37.00_44592a86_jeumna.jpg",
-    gallery: [
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744643216/Imagen_de_WhatsApp_2025-02-06_a_las_18.37.00_44592a86_jeumna.jpg",
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642267/Tile_tbbln5.jpg"
-    ],
-    description: "Azulejos de cerámica y porcelana para baños y cocinas."
-  },
-  {
-    key: "Wood",
-    label: "Madera",
-    image: "https://res.cloudinary.com/drwacbtjf/image/upload/v1743508300/WhatsApp_Image_2025-03-31_at_23.10.44_3f250b6b_g2xic4.jpg",
-    bgImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642270/wood_kctkbz.jpg",
-    modalImage: "https://res.cloudinary.com/drwacbtjf/image/upload/v1744643154/Imagen_de_WhatsApp_2025-02-06_a_las_18.37.00_737de658_ioa8xa.jpg",
-    gallery: [
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744643154/Imagen_de_WhatsApp_2025-02-06_a_las_18.37.00_737de658_ioa8xa.jpg",
-      "https://res.cloudinary.com/drwacbtjf/image/upload/v1744642270/wood_kctkbz.jpg"
-    ],
-    description: "Pisos de madera natural, elegantes y duraderos."
-  }
-];
+import { flooringData } from './FlooringData';
+import './FlooringSection.css';
 ---
-<section id="flooring-section">
-  <div class="flooring-sections">
-    <h2 class="flooring-title">Nuestros Pisos y Acabados</h2>
-    <div class="flooring-grid">
-      {flooringData.map((floor) => (
-        <>
-          <div
-            class="flooring-card"
-            data-floor={floor.key}
-            id={`flooring-card-${floor.key}`}
-          >
-            <img src={floor.image} alt={floor.label} />
-            <div class="floor-label">{floor.label}</div>
-          </div>
-          <div id={`flooring-detail-${floor.key}`}></div>
-        </>
+<section id="flooring-section" data-aos="fade-up">
+  <div class="flooring-sections" data-aos="zoom-in" data-aos-delay="200">
+    <div id="flooring-bg-overlay" class="flooring-bg-overlay"></div>
+    <h2 class="flooring-title" data-aos="fade-up" data-aos-delay="100">Our Flooring Types</h2>
+    <div class="flooring-grid" data-aos="fade-up" data-aos-delay="300">
+      {flooringData.map((floor, index) => (
+        <div
+          class="flooring-card"
+          data-floor={floor.key}
+          data-bg-image={floor.bgImage}
+          data-modal-image={floor.modalImage}
+          data-aos="fade-up"
+          data-aos-delay={400 + index * 100}
+        >
+          <img src={floor.image} alt={floor.label} />
+          <div class="floor-label">{floor.label}</div>
+        </div>
       ))}
     </div>
   </div>
+  <!-- Hidden content for each flooring type -->
+  <div id="vinyl-content" style="display: none;">
+    <div>
+      <h4>Water Resistant</h4>
+      <p>Perfect for wet areas like bathrooms and kitchens.</p>
+      <h4>Comfort</h4>
+      <p>Provides a soft and comfortable surface to walk on.</p>
+      <h4>Versatility</h4>
+      <p>Suitable for any space in your home.</p>
+    </div>
+  </div>
+  <div id="laminate-content" style="display: none;">
+    <div>
+      <h4>Durability</h4>
+      <p>Laminate floors are known for their exceptional durability and wear resistance.</p>
+      <h4>Easy Maintenance</h4>
+      <p>They require minimal maintenance and are easy to clean.</p>
+      <h4>Style Variety</h4>
+      <p>Available in a wide range of colors and textures that mimic natural wood.</p>
+    </div>
+  </div>
+  <div id="tile-content" style="display: none;">
+    <div>
+      <h4>Durability</h4>
+      <p>Tile floors are extremely durable and resistant to scratches and stains.</p>
+      <h4>Low Maintenance</h4>
+      <p>Easy to clean and maintain, ideal for high-traffic areas.</p>
+      <h4>Design Options</h4>
+      <p>Available in a variety of colors, patterns, and sizes.</p>
+    </div>
+  </div>
+  <div id="wood-content" style="display: none;">
+    <div>
+      <h4>Natural Beauty</h4>
+      <p>Wood floors add warmth and elegance to any space.</p>
+      <h4>Longevity</h4>
+      <p>With proper care, wood floors can last for generations.</p>
+      <h4>Value</h4>
+      <p>Increases the value of your property.</p>
+    </div>
+  </div>
 </section>
-<script is:inline type="module">
-  let selectedFloorKey = null;
-  const cards = document.querySelectorAll('.flooring-card');
-  const flooringDataArr = JSON.parse('{JSON.stringify(flooringData)}');
-  cards.forEach(card => {
-    card.addEventListener('click', () => {
-      const key = card.getAttribute('data-floor');
-      if (selectedFloorKey === key) {
-        document.getElementById(`flooring-detail-${key}`).innerHTML = '';
-        selectedFloorKey = null;
-        card.style.boxShadow = '';
+<script>
+  // Asegurarnos de que el script se ejecute después de que el DOM esté cargado
+  document.addEventListener('DOMContentLoaded', () => {
+    let selectedFloor: string | null = null;
+    let bgImage: string | null = null;
+    let fadeOut = false;
+    let fixedBgImage: string | null = null;
+
+    const flooringBgOverlay = document.getElementById('flooring-bg-overlay');
+    const flooringCards = document.querySelectorAll('.flooring-card');
+
+    function updateBackground() {
+      if (!flooringBgOverlay) return;
+      
+      const backgroundImage = fixedBgImage || bgImage;
+      if (backgroundImage) {
+        flooringBgOverlay.style.backgroundImage = `url(${backgroundImage})`;
+        flooringBgOverlay.classList.toggle('fade-out', fadeOut && !fixedBgImage);
       } else {
-        if (selectedFloorKey) {
-          document.getElementById(`flooring-detail-${selectedFloorKey}`).innerHTML = '';
-          document.getElementById(`flooring-card-${selectedFloorKey}`).style.boxShadow = '';
-        }
-        const floor = flooringDataArr.find(f => f.key === key);
-        if (floor) {
-          document.getElementById(`flooring-detail-${key}`).innerHTML = `
-            <div class='flooring-modal-panel'>
-              <div class='flooring-modal-gallery'>
-                <button class='nav-btn prev'>&lt;</button>
-                ${floor.gallery.map((img, i) =>
-                  i === 0 ? (
-                    img.endsWith('.mp4')
-                      ? `<video src='${img}' controls autoplay style='max-width:320px;border-radius:8px;background:#fff;'></video>`
-                      : `<img src='${img}' alt='${floor.label}' style='max-width:220px;border-radius:8px;background:#fff;' />`
-                  ) : ''
-                ).join('')}
-                <button class='nav-btn next'>&gt;</button>
+        flooringBgOverlay.style.backgroundImage = 'none';
+      }
+    }
+
+    flooringCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const floorKey = card.getAttribute('data-floor');
+        const modalImage = card.getAttribute('data-modal-image');
+        if (floorKey && modalImage) {
+          selectedFloor = floorKey;
+          fixedBgImage = card.getAttribute('data-bg-image');
+          updateBackground();
+          
+          // Create and show modal
+          const modal = document.createElement('div');
+          modal.className = 'modal-overlay';
+          
+          // Prevent body scroll when modal is open
+          document.body.style.overflow = 'hidden';
+          document.getElementById('header-group')?.classList.add('hide-header');
+          
+          // Get the content for the selected floor type
+          const contentElement = document.getElementById(`${floorKey.toLowerCase()}-content`);
+          const content = contentElement ? contentElement.innerHTML : '';
+          
+          modal.innerHTML = `
+            <div class="modal-card-two-columns">
+              <div class="modal-image-column">
+                <img src="${modalImage}" alt="${floorKey}" />
               </div>
-              <div class='flooring-modal-title'>${floor.label}</div>
-              <div class='flooring-modal-description'>${floor.description}</div>
-              <button class='close-detail'>Cerrar</button>
+              <div class="modal-text-column">
+                <h2 class="modal-title">${floorKey}</h2>
+                <div class="modal-content-scroll">
+                  ${content}
+                </div>
+                <button class="close-btn">Cerrar</button>
+              </div>
             </div>
           `;
-          document.getElementById(`flooring-card-${key}`).style.boxShadow = '0 0 0 3px #2a7892';
-          selectedFloorKey = key;
-          // Galería navegable
-          let current = 0;
-          const panel = document.getElementById(`flooring-detail-${key}`);
-          const gallery = floor.gallery;
-          const updateGallery = () => {
-            const galleryDiv = panel.querySelector('.flooring-modal-gallery');
-            galleryDiv.innerHTML = `
-              <button class='nav-btn prev'>&lt;</button>
-              ${gallery[current].endsWith('.mp4')
-                ? `<video src='${gallery[current]}' controls autoplay style='max-width:320px;border-radius:8px;background:#fff;'></video>`
-                : `<img src='${gallery[current]}' alt='${floor.label}' style='max-width:220px;border-radius:8px;background:#fff;' />`
-              }
-              <button class='nav-btn next'>&gt;</button>
-            `;
-            galleryDiv.querySelector('.prev').onclick = () => {
-              current = (current - 1 + gallery.length) % gallery.length;
-              updateGallery();
-            };
-            galleryDiv.querySelector('.next').onclick = () => {
-              current = (current + 1) % gallery.length;
-              updateGallery();
-            };
+
+          document.body.appendChild(modal);
+
+          // Handle modal close
+          const closeBtn = modal.querySelector('.close-btn');
+          const closeModal = () => {
+            modal.remove();
+            selectedFloor = null;
+            fixedBgImage = null;
+            updateBackground();
+            document.body.style.overflow = '';
+            document.getElementById('header-group')?.classList.remove('hide-header');
+            document.getElementById('flooring-section')?.scrollIntoView({ behavior: 'smooth' });
           };
-          updateGallery();
-          // Cerrar
-          panel.querySelector('.close-detail').onclick = () => {
-            panel.innerHTML = '';
-            document.getElementById(`flooring-card-${key}`).style.boxShadow = '';
-            selectedFloorKey = null;
+
+          closeBtn?.addEventListener('click', closeModal);
+
+          // Close on outside click
+          modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+              closeModal();
+            }
+          });
+
+          // Close on Escape key
+          const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+              closeModal();
+              document.removeEventListener('keydown', handleEscape);
+            }
           };
+          document.addEventListener('keydown', handleEscape);
         }
-      }
+      });
+
+      card.addEventListener('mouseenter', () => {
+        bgImage = card.getAttribute('data-bg-image');
+        fadeOut = false;
+        updateBackground();
+      });
+
+      card.addEventListener('mouseleave', () => {
+        fadeOut = true;
+        updateBackground();
+      });
     });
   });
 </script>
-<style>
-.flooring-sections {
-  position: relative;
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 20px;
-  margin: 2rem auto;
-  max-width: 1200px;
-  overflow: hidden;
-}
-.flooring-title {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  color: #2a7892;
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  letter-spacing: 1px;
-}
-.flooring-grid {
-  position: relative;
-  z-index: 2;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-.flooring-card {
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px 0 rgba(42,120,146,0.08);
-  transition: box-shadow 0.2s;
-}
-.flooring-card img {
-  width: 100%;
-  height: auto;
-  display: block;
-  object-fit: contain;
-  border-radius: 12px 12px 0 0;
-}
-.floor-label {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  color: #fff;
-  font-weight: bold;
-  background-color: rgba(0, 0, 0, 0.5);
-  padding: 5px 10px;
-  border-radius: 5px;
-}
-</style> 

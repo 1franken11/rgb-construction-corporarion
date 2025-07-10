@@ -1,24 +1,47 @@
 ---
-import TopBar from '../components/TopBar.astro';
-import Navbar from '../components/Navbar.astro';
-import ShadersSlider from '../components/ShadersSlider.astro';
+import MainLayout from '../layouts/MainLayout.astro';
 import QuienesSomos from '../components/QuienesSomos.astro';
-import ProjectSection from '../components/ProjectSection.astro';
-import ReviewsCarousel from '../components/ReviewsCarousel.astro';
-import ContactForm from '../components/ContactForm.astro';
-import Footer from '../components/Footer.astro';
 import FlooringSection from '../components/FlooringSection.astro';
-import Layout from '../layouts/Layout.astro';
+import ProjectSection from '../components/ProjectSection.astro';
+import ContactForm from '../components/ContactForm.astro';
+import ShadersSlider from '../components/ShadersSliderMultilingual.astro';
+import ReviewsCarousel from '../components/ReviewsCarousel.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<Layout>
-	<TopBar />
-	<Navbar />
-	<ShadersSlider />
-	<QuienesSomos />
-	<FlooringSection/>
-	<ProjectSection />
-	<ReviewsCarousel />
-	<ContactForm />
-	<Footer />
-</Layout>
+<MainLayout title="Home | RGB Corp">
+    <main>
+  <div id="inicio" style="margin-top: var(--header-total-height);">
+	<ShadersSlider></ShadersSlider>
+  </div>
+  <div id="quienes-somos">
+    <QuienesSomos />
+  </div>
+  <div id="servicios">
+    <FlooringSection />
+  </div>
+  <div id="proyectos">
+    <ProjectSection />
+  </div>
+  <ReviewsCarousel />
+  <div id="contacto">
+    <ContactForm />
+  </div>
+  <Footer />
+  </main>
+</MainLayout>
+<script is:inline>
+  // Scroll suave para los links del navbar
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href').replace('#', '');
+        const target = document.getElementById(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  });
+</script> 
