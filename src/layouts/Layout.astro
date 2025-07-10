@@ -9,14 +9,192 @@
 	</head>
 	<body>
 		<slot />
+
+		<!-- Script global para FlooringModal -->
+		<script>
+		if (!window.__flooringModalDefined) {
+		  window.__flooringModalDefined = true;
+		  window.createFlooringModal = function({ gallery, title, description }) {
+			let currentGalleryIndex = 0;
+			const modal = document.createElement('div');
+			modal.className = 'flooring-modal';
+			modal.innerHTML = `
+			  <div class="modal-content">
+				<button class="close-button">&times;</button>
+				<button class="nav-button prev-button">&lt;</button>
+				<button class="nav-button next-button">&gt;</button>
+				<div class="modal-gallery"></div>
+				<div class="modal-info">
+				  <div class="modal-title">${title}</div>
+				  <div class="modal-description">${description}</div>
+				</div>
+			  </div>
+			`;
+
+			const modalGallery = modal.querySelector('.modal-gallery');
+			const closeButton = modal.querySelector('.close-button');
+			const prevButton = modal.querySelector('.prev-button');
+			const nextButton = modal.querySelector('.next-button');
+
+			function showMedia(index) {
+			  if (!modalGallery) return;
+			  const media = gallery[index];
+			  const isVideo = media.endsWith('.mp4');
+			  modalGallery.innerHTML = isVideo
+				? `<video src="${media}" controls autoplay></video>`
+				: `<img src="${media}" alt="Imagen de galería" />`;
+			}
+
+			function nextMedia() {
+			  currentGalleryIndex = (currentGalleryIndex + 1) % gallery.length;
+			  showMedia(currentGalleryIndex);
+			}
+
+			function prevMedia() {
+			  currentGalleryIndex = (currentGalleryIndex - 1 + gallery.length) % gallery.length;
+			  showMedia(currentGalleryIndex);
+			}
+
+			closeButton?.addEventListener('click', () => {
+			  modal.remove();
+			  document.body.style.overflow = '';
+			  document.body.style.filter = '';
+			});
+			prevButton?.addEventListener('click', prevMedia);
+			nextButton?.addEventListener('click', nextMedia);
+
+			// Mostrar el primer elemento
+			showMedia(currentGalleryIndex);
+
+			// Cerrar con la tecla Escape
+			document.addEventListener('keydown', function escListener(e) {
+			  if (e.key === 'Escape') {
+				modal.remove();
+				document.body.style.overflow = '';
+				document.body.style.filter = '';
+				document.removeEventListener('keydown', escListener);
+			  }
+			});
+
+			// Cerrar al hacer clic fuera del contenido
+			modal.addEventListener('click', (e) => {
+			  if (e.target === modal) {
+				modal.remove();
+				document.body.style.overflow = '';
+				document.body.style.filter = '';
+			  }
+			});
+
+			document.body.appendChild(modal);
+		  };
+		}
+		</script>
+
+		<style>
+		.flooring-modal {
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100vw;
+		  height: 100vh;
+		  background: rgba(0, 0, 0, 0.9);
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  z-index: 1000;
+		}
+		.modal-content {
+		  position: relative;
+		  width: 90vw;
+		  max-width: 900px;
+		  height: 90vh;
+		  max-height: 700px;
+		  display: flex;
+		  flex-direction: column;
+		  justify-content: center;
+		  align-items: center;
+		  background: none;
+		}
+		.modal-gallery {
+		  width: 100%;
+		  height: 60vh;
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		}
+		.modal-gallery img,
+		.modal-gallery video {
+		  max-width: 100%;
+		  max-height: 60vh;
+		  object-fit: contain;
+		  border-radius: 8px;
+		  background: #fff;
+		}
+		.close-button {
+		  position: absolute;
+		  top: 20px;
+		  right: 20px;
+		  background: none;
+		  border: none;
+		  color: white;
+		  font-size: 30px;
+		  cursor: pointer;
+		  z-index: 1001;
+		}
+		.nav-button {
+		  position: absolute;
+		  top: 50%;
+		  transform: translateY(-50%);
+		  background: rgba(255, 255, 255, 0.2);
+		  border: none;
+		  color: white;
+		  font-size: 24px;
+		  padding: 10px 15px;
+		  cursor: pointer;
+		  z-index: 1001;
+		}
+		.prev-button {
+		  left: 20px;
+		}
+		.next-button {
+		  right: 20px;
+		}
+		.modal-info {
+		  width: 100%;
+		  margin-top: 1.5rem;
+		  text-align: center;
+		  color: #fff;
+		}
+		.modal-title {
+		  font-size: 1.3rem;
+		  font-weight: bold;
+		  margin-bottom: 0.5rem;
+		}
+		.modal-description {
+		  font-size: 1rem;
+		  opacity: 0.95;
+		}
+		@media (max-width: 768px) {
+		  .modal-content {
+			width: 98vw;
+			height: 98vh;
+			max-width: 100vw;
+			max-height: 100vh;
+		  }
+		  .modal-gallery {
+			height: 40vh;
+		  }
+		  .modal-gallery img,
+		  .modal-gallery video {
+			max-height: 40vh;
+		  }
+		  .modal-title {
+			font-size: 1.1rem;
+		  }
+		  .modal-description {
+			font-size: 0.95rem;
+		  }
+		}
+		</style>
 	</body>
 </html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>

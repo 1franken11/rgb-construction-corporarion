@@ -1,203 +1,90 @@
 ---
-// No imports ni lógica extra - solo en español
+const { floor } = Astro.props;
+const floorObj = typeof floor === 'string' ? JSON.parse(decodeURIComponent(floor)) : floor;
+let current = 0;
 ---
-
-<div class="modal-backdrop">
-  <div class="modal-content">
-    <button class="modal-close" aria-label="Cerrar modal">×</button>
-    <div class="modal-gallery">
-      <button class="gallery-nav prev" aria-label="Imagen anterior">❮</button>
-      <div class="gallery-container">
-        <!-- El contenido de la galería se cargará dinámicamente -->
-      </div>
-      <button class="gallery-nav next" aria-label="Siguiente imagen">❯</button>
-    </div>
+<div class="flooring-modal-panel">
+  <div class="flooring-modal-gallery">
+    <button class="nav-btn" onclick="this.parentNode.parentNode.querySelector('img,video').src = this.parentNode.parentNode.__gallery[--this.parentNode.parentNode.__current = (this.parentNode.parentNode.__current + this.parentNode.parentNode.__gallery.length - 1) % this.parentNode.parentNode.__gallery.length];">&#60;</button>
+    {floorObj.gallery[current].endsWith('.mp4') ? (
+      <video src={floorObj.gallery[current]} controls autoplay style="max-width: 320px; border-radius: 8px; background: #fff;" />
+    ) : (
+      <img src={floorObj.gallery[current]} alt={floorObj.label} style="max-width: 220px; border-radius: 8px; background: #fff;" />
+    )}
+    <button class="nav-btn" onclick="this.parentNode.parentNode.querySelector('img,video').src = this.parentNode.parentNode.__gallery[++this.parentNode.parentNode.__current = (this.parentNode.parentNode.__current + 1) % this.parentNode.parentNode.__gallery.length];">&#62;</button>
   </div>
+  <div class="flooring-modal-title">{floorObj.label}</div>
+  <div class="flooring-modal-description">{floorObj.description}</div>
+  <button class="close-detail" onclick="this.closest('.flooring-detail, .flooring-modal-panel').parentNode.innerHTML = ''">Cerrar</button>
 </div>
-
-<script>
-// @ts-nocheck
-class FlooringModal extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
-  }
-
-  connectedCallback() {
-    const gallery = JSON.parse(this.getAttribute('gallery') || '[]');
-    let currentIndex = 0;
-
-    const template = `
-      <style>
-        .modal-backdrop {
-          position: fixed;
-          inset: 0;
-          background-color: rgba(0, 0, 0, 0.85);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          z-index: 1050;
-        }
-
-        .modal-content {
-          position: relative;
-          max-width: 95vw;
-          max-height: 95vh;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-
-        .modal-gallery {
-          position: relative;
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .gallery-container {
-          max-width: 90vw;
-          max-height: 90vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .gallery-container img,
-        .gallery-container video {
-          max-width: 100%;
-          max-height: 90vh;
-          object-fit: contain;
-        }
-
-        .gallery-nav {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          background: rgba(255, 255, 255, 0.2);
-          border: none;
-          color: white;
-          font-size: 24px;
-          padding: 15px;
-          cursor: pointer;
-          border-radius: 50%;
-          transition: background-color 0.3s;
-        }
-
-        .gallery-nav:hover {
-          background: rgba(255, 255, 255, 0.3);
-        }
-
-        .prev {
-          left: 20px;
-        }
-
-        .next {
-          right: 20px;
-        }
-
-        .modal-close {
-          position: absolute;
-          top: -40px;
-          right: 0;
-          background: white;
-          border: none;
-          width: 32px;
-          height: 32px;
-          cursor: pointer;
-          font-size: 22px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
-        }
-      </style>
-      <div class="modal-backdrop">
-        <div class="modal-content">
-          <button class="modal-close">×</button>
-          <div class="modal-gallery">
-            <button class="gallery-nav prev">❮</button>
-            <div class="gallery-container"></div>
-            <button class="gallery-nav next">❯</button>
-          </div>
-        </div>
-      </div>
-    `;
-
-    this.shadowRoot.innerHTML = template;
-
-    const container = this.shadowRoot.querySelector('.gallery-container');
-    const prevButton = this.shadowRoot.querySelector('.prev');
-    const nextButton = this.shadowRoot.querySelector('.next');
-    const closeButton = this.shadowRoot.querySelector('.modal-close');
-
-    function showMedia(index) {
-      if (!container) return;
-      const media = gallery[index];
-      const isVideo = media.endsWith('.mp4') || media.endsWith('.webm');
-      container.innerHTML = isVideo
-        ? `<video src="${media}" controls autoplay></video>`
-        : `<img src="${media}" alt="Imagen de galería" />`;
-    }
-
-    function updateNavigation() {
-      if (prevButton && prevButton instanceof HTMLElement) {
-        prevButton.style.display = currentIndex > 0 ? 'block' : 'none';
-      }
-      if (nextButton && nextButton instanceof HTMLElement) {
-        nextButton.style.display = currentIndex < gallery.length - 1 ? 'block' : 'none';
-      }
-    }
-
-    prevButton?.addEventListener('click', () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        showMedia(currentIndex);
-        updateNavigation();
-      }
-    });
-
-    nextButton?.addEventListener('click', () => {
-      if (currentIndex < gallery.length - 1) {
-        currentIndex++;
-        showMedia(currentIndex);
-        updateNavigation();
-      }
-    });
-
-    closeButton?.addEventListener('click', () => {
-      this.remove();
-    });
-
-    // Mostrar la primera imagen
-    showMedia(currentIndex);
-    updateNavigation();
-
-    // Cerrar con Escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        this.remove();
-      }
-    });
-
-    // Navegación con flechas
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft' && currentIndex > 0) {
-        currentIndex--;
-        showMedia(currentIndex);
-        updateNavigation();
-      }
-      if (e.key === 'ArrowRight' && currentIndex < gallery.length - 1) {
-        currentIndex++;
-        showMedia(currentIndex);
-        updateNavigation();
-      }
-    });
-  }
+<script is:inline>
+  const panel = document.currentScript.parentNode;
+  panel.__gallery = {JSON.stringify(floorObj.gallery)};
+  panel.__current = 0;
+</script>
+<style>
+.flooring-modal-panel {
+  background: #f8f9fa;
+  border-radius: 16px;
+  margin: 1rem 0 2rem 0;
+  padding: 2rem 1rem 1.5rem 1rem;
+  box-shadow: 0 2px 16px 0 rgba(42,120,146,0.10);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: fadeIn 0.3s;
 }
-
-customElements.define('flooring-modal', FlooringModal);
-</script> 
+.flooring-modal-gallery {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.nav-btn {
+  background: #2a7892;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.nav-btn:hover {
+  background: #1b4e5c;
+}
+.flooring-modal-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #2a7892;
+}
+.flooring-modal-description {
+  font-size: 1rem;
+  opacity: 0.95;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+.close-detail {
+  background: #2a7892;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+.close-detail:hover {
+  background: #1b4e5c;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+</style> 
