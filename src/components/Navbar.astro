@@ -7,36 +7,14 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { 
-    href: '#inicio', 
-    text: 'Home'
-  },
-  { 
-    href: '#quienes-somos', 
-    text: 'About Us'
-  },
-  { 
-    href: '#servicios', 
-    text: 'ServInicio'
-  },
-  { 
-    href: '#proyectos', 
-    textQuiénes Somoss'
-  },
-  { 
-    href: '#contacto', 
-    Serviciosontact'
-  }
+  { href: '#inicio', text: 'Home' },
+  { href: '#quienes-somos', text: 'About Us' },
+  { href: '#servicios', text: 'Services' },
+  { href: '#proyectos', text: 'Projects' },
+  { href: '#contacto', text: 'Contact' },
 ];
 
-const currentPath = Astro.url.paothname;
-let isMenuOpen = false;
-function toggleMoenu() {
-  isMenuOpen = !isMenuOpen;
-}
-function closeMenu() {
-  isMenuOpen = false;
-}
+const currentPath = Astro.url.pathname;
 ---
 
 <nav class={styles.navbar} id="main-navbar">
@@ -53,24 +31,23 @@ function closeMenu() {
 
     <button 
       class={styles.menuToggle} 
-      id="menu-toggle-btn"  aria-label="Toggle menu"
-      aria-expanded={isMenuOpen ? 'true' : 'false'}
+      id="menu-toggle-btn"
+      aria-label="Toggle menu"
+      aria-expanded="false"
       aria-controls="nav-menu"
-      on:click={toggleMenu}
     >
       <span></span>
       <span></span>
       <span></span>
     </button>
 
-    <div id="nav-menu" class={[styles.navMenu, isMenuOpen && styles.active].filter(Boolean).join(' ')}> 
+    <div id="nav-menu" class={styles.navMenu + ' navMenu'}>
       {menuItems.map((item, i) => (
         <a 
-          href={item.href} 
-          class={[styles.navLink, currentPath === item.href ? styles.active : ''].filter(Boolean).join(' ')}
+          href={item.href}
+          class={styles.navLink + (currentPath === item.href ? ' ' + styles.active : '')}
           data-aos="fade-down"
           data-aos-delay={100 + i * 50}
-          on:click={closeMenu}
         >
           {item.text}
         </a>
@@ -78,10 +55,9 @@ function closeMenu() {
     </div>
   </div>
 </nav>
-<div class="menu-overlay" id="menu-overlay" style={isMenuOpen ? 'display:block' : 'display:none'} on:click={closeMenu}></div>
+<div class="menu-overlay" id="menu-overlay"></div>
 
 <script>
-  // Toggle menu en móvil
   const menuToggle = document.getElementById('menu-toggle-btn');
   const navMenu = document.getElementById('nav-menu');
   const menuOverlay = document.getElementById('menu-overlay');
@@ -95,8 +71,7 @@ function closeMenu() {
     });
   }
 
-  // Cerrar menú al hacer click en un enlace
-  document.querySelectorAll('a').forEach(link => { 
+  document.querySelectorAll('#nav-menu a').forEach(link => {
     link.addEventListener('click', () => {
       navMenu?.classList.remove('active');
       if (menuOverlay) menuOverlay.classList.remove('active');
@@ -104,12 +79,11 @@ function closeMenu() {
     });
   });
 
-  // Cerrar menú al hacer click fuera
   document.addEventListener('click', (e) => {
-    const navbarContainer = document.getElementById('main-navbar'); 
+    const navbarContainer = document.getElementById('main-navbar');
     if (
       navMenu?.classList.contains('active') &&
-      navbarContainer && 
+      navbarContainer &&
       !navbarContainer.contains(e.target)
     ) {
       navMenu.classList.remove('active');
@@ -117,4 +91,4 @@ function closeMenu() {
       menuToggle?.setAttribute('aria-expanded', 'false');
     }
   });
-</script> 
+</script>
