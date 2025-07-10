@@ -30,6 +30,13 @@ const menuItems: MenuItem[] = [
 ];
 
 const currentPath = Astro.url.pathname;
+let isMenuOpen = false;
+function toggleMenu() {
+  isMenuOpen = !isMenuOpen;
+}
+function closeMenu() {
+  isMenuOpen = false;
+}
 ---
 
 <nav class={styles.navbar} id="main-navbar">
@@ -46,20 +53,21 @@ const currentPath = Astro.url.pathname;
 
     <button 
       class={styles.menuToggle} 
-      id="menu-toggle-btn"  aria-labimage.pngel="Toggle menu"
-      aria-expanded="false"
+      id="menu-toggle-btn"  aria-label="Toggle menu"
+      aria-expanded={isMenuOpen ? 'true' : 'false'}
       aria-controls="nav-menu"
+      onclick={toggleMenu}
     >
       <span></span>
       <span></span>
       <span></span>
     </button>
 
-    <div id="nav-menu" class="nav-menu"> 
+    <div id="nav-menu" class="navMenu"> 
       {menuItems.map((item, i) => (
         <a 
           href={item.href} 
-          class:list={[styles.navLink, currentPath === item.href ? styles.active : 'nav-link']}
+          class={styles.navLink + (currentPath === item.href ? ' ' + styles.active : '')}
           data-aos="fade-down"
           data-aos-delay={100 + i * 50}
         >
@@ -69,160 +77,11 @@ const currentPath = Astro.url.pathname;
     </div>
   </div>
 </nav>
-<div class="menu-overlay" id="menu-overlay"></div>
-
-<style>
-  .navbar {
-    background-color: var(--color-secondary);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    position: static;
-    width: 100%;
-    z-index: 1000;
-  }
-
-  .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
-  }
-
-  .logo img {
-    height: 80px;
-    width: auto;
-    max-width: 200px;
-    object-fit: contain;
-    display: block;
-    align-self: center;
-  }
-
-  .nav-menu {
-    display: flex;
-    gap: var(--spacing-lg);
-    align-items: center;
-    z-index: 2000;
-  }
-
-  .nav-link {
-    color: var(--color-primary);
-    font-weight: 500;
-    padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: 4px;
-    transition: all 0.3s ease;
-  }
-
-  .nav-link.active { /* Definimos la clase active aquí */
-    background-color: rgba(0, 0, 0, 0.1);
-    color: var(--color-accent);
-  }
-
-  .nav-link:hover {
-    color: var(--color-accent);
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-
-  .menu-toggle {
-    display: none;
-    flex-direction: column;
-    gap: 6px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: var(--spacing-xs);
-  }
-
-  .menu-toggle span {
-    display: block;
-    width: 25px;
-    height: 2px;
-    background-color: var(--color-primary);
-    transition: all 0.3s ease;
-  }
-
-  @media (max-width: 768px) {
-    .menu-toggle {
-      display: flex;
-    }
-
-    .nav-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background-color: var(--color-secondary);
-      padding: var(--spacing-md);
-      flex-direction: column;
-      gap: var(--spacing-sm);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      z-index: 2000;
-    }
-
-    .nav-menu.active {
-      display: flex;
-    }
-
-    .nav-link {
-      padding: var(--spacing-sm);
-      width: 100%;
-      text-align: center;
-    }
-    .language-selector-mobile-wrapper {
-      margin-top: 16px;
-      display: flex;
-      justify-content: center;
-    }
-    .menu-overlay {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.5);
-      backdrop-filter: blur(4px);
-      transition: opacity 0.3s;
-      opacity: 0;
-    }
-    .menu-overlay.active {
-      display: block;
-      opacity: 1;
-    }
-    .logo img {
-      height: 108px;
-      max-width: 270px;
-    }
-  }
-
-  @media (min-width: 769px) and (max-width: 1300px) {
-    .nav-menu {
-      display: flex;
-      gap: var(--spacing-md);
-      align-items: center;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-    }
-
-    .language-selector-mobile-wrapper {
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-width: 160px;
-    }
-
-    .nav-link {
-      padding: var(--spacing-xs) var(--spacing-sm);
-      white-space: nowrap;
-    }
-  }
-</style>
+<div class="menu-overlay" id="menu-overlay" style={isMenuOpen ? 'display:block' : 'display:none'} onclick={closeMenu}></div>
 
 <script>
-  // Toggle menu en móvil
-  // Usamos los IDs que agregamos/ya existen
   const menuToggle = document.getElementById('menu-toggle-btn');
   const navMenu = document.getElementById('nav-menu');
-  // navMenu ahora tiene clase 'nav-menu'
   const menuOverlay = document.getElementById('menu-overlay');
 
   if (menuToggle && navMenu) {
@@ -234,8 +93,7 @@ const currentPath = Astro.url.pathname;
     });
   }
 
-  // Cerrar menú al hacer click en un enlace
-  document.querySelectorAll('.nav-link').forEach(link => { 
+  document.querySelectorAll('#nav-menu a').forEach(link => { 
     link.addEventListener('click', () => {
       navMenu?.classList.remove('active');
       if (menuOverlay) menuOverlay.classList.remove('active');
@@ -243,19 +101,16 @@ const currentPath = Astro.url.pathname;
     });
   });
 
-  // Cerrar menú al hacer click fuera
   document.addEventListener('click', (e) => {
-    // CAMBIO AQUÍ: Seleccionamos la navbar por su ID
     const navbarContainer = document.getElementById('main-navbar'); 
-
     if (
       navMenu?.classList.contains('active') &&
       navbarContainer && 
-      !navbarContainer.contains(e.target as Node)
+      !navbarContainer.contains(e.target)
     ) {
       navMenu.classList.remove('active');
       if (menuOverlay) menuOverlay.classList.remove('active');
       menuToggle?.setAttribute('aria-expanded', 'false');
     }
   });
-</script>
+</script> 
