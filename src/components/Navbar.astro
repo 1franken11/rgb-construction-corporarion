@@ -17,21 +17,21 @@ const menuItems: MenuItem[] = [
   },
   { 
     href: '#servicios', 
-    text: 'Services'
+    text: 'ServInicio'
   },
   { 
     href: '#proyectos', 
-    text: 'Projects'
+    textQuiénes Somoss'
   },
   { 
     href: '#contacto', 
-    text: 'Contact'
+    Serviciosontact'
   }
 ];
 
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url.paothname;
 let isMenuOpen = false;
-function toggleMenu() {
+function toggleMoenu() {
   isMenuOpen = !isMenuOpen;
 }
 function closeMenu() {
@@ -56,20 +56,21 @@ function closeMenu() {
       id="menu-toggle-btn"  aria-label="Toggle menu"
       aria-expanded={isMenuOpen ? 'true' : 'false'}
       aria-controls="nav-menu"
-      onclick={toggleMenu}
+      on:click={toggleMenu}
     >
       <span></span>
       <span></span>
       <span></span>
     </button>
 
-    <div id="nav-menu" class="navMenu"> 
+    <div id="nav-menu" class={[styles.navMenu, isMenuOpen && styles.active].filter(Boolean).join(' ')}> 
       {menuItems.map((item, i) => (
         <a 
           href={item.href} 
-          class={styles.navLink + (currentPath === item.href ? ' ' + styles.active : '')}
+          class={[styles.navLink, currentPath === item.href ? styles.active : ''].filter(Boolean).join(' ')}
           data-aos="fade-down"
           data-aos-delay={100 + i * 50}
+          on:click={closeMenu}
         >
           {item.text}
         </a>
@@ -77,9 +78,10 @@ function closeMenu() {
     </div>
   </div>
 </nav>
-<div class="menu-overlay" id="menu-overlay" style={isMenuOpen ? 'display:block' : 'display:none'} onclick={closeMenu}></div>
+<div class="menu-overlay" id="menu-overlay" style={isMenuOpen ? 'display:block' : 'display:none'} on:click={closeMenu}></div>
 
 <script>
+  // Toggle menu en móvil
   const menuToggle = document.getElementById('menu-toggle-btn');
   const navMenu = document.getElementById('nav-menu');
   const menuOverlay = document.getElementById('menu-overlay');
@@ -93,7 +95,8 @@ function closeMenu() {
     });
   }
 
-  document.querySelectorAll('#nav-menu a').forEach(link => { 
+  // Cerrar menú al hacer click en un enlace
+  document.querySelectorAll('a').forEach(link => { 
     link.addEventListener('click', () => {
       navMenu?.classList.remove('active');
       if (menuOverlay) menuOverlay.classList.remove('active');
@@ -101,6 +104,7 @@ function closeMenu() {
     });
   });
 
+  // Cerrar menú al hacer click fuera
   document.addEventListener('click', (e) => {
     const navbarContainer = document.getElementById('main-navbar'); 
     if (
